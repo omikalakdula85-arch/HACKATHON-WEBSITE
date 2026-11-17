@@ -1,4 +1,5 @@
 node_modules/
+.next/
 .env
 .env.local
 venv/
@@ -6,3 +7,8 @@ __pycache__/
 .DS_Store
 dist/
 build/
+*.tsbuildinfo
+*.sqlite3
+*.db
+BACKEND/models/*.joblib
+BACKEND/uploads/
