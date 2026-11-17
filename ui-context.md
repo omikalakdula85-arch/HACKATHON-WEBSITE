@@ -1,7 +1,7 @@
 # UI & UX Context Rules
 
 ## 🎨 Styling Guidelines
-- **Theme:** Clean, modern dark mode (slate/zinc background with high-contrast accent colors like emerald or indigo).
+- **Theme:** Clean, modern dark mode (slate/zinc background with high-contrast accent colors like git checkemerald or indigo).
 - **Layout:** Split-screen or clear dashboard layout where inputs/parameters are on one side and algorithm outputs/visualizations are on the other.
 
 ## ⏳ Loading & State Management
