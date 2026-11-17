@@ -1,27 +1,77 @@
 {
-  "scenarioId": "scenario_01_normal",
-  "userPriority": "cost_efficient",
-  "parameters": {
-    "maxResources": 3,
-    "capacityLimit": 50,
-    "allowDisruptions": false
-  },
-  "nodes": [
-    {
-      "id": "node_01",
-      "name": "Location Alpha",
-      "latitude": 6.9271,
-      "longitude": 79.8612,
-      "demandOrLoad": 15,
-      "attributes": ["accessible", "high_priority"]
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BuildX Challenge 05 waste collection input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scenarioId", "userPriority", "parameters", "depot", "vehicles", "nodes"],
+  "properties": {
+    "scenarioId": { "type": "string", "minLength": 1 },
+    "userPriority": { "enum": ["cost_efficient", "balanced", "urgent"] },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowDisruptions", "shiftStart", "serviceMinutesPerStop", "averageSpeedKmh", "roadDistanceFactor"],
+      "properties": {
+        "allowDisruptions": { "type": "boolean" },
+        "shiftStart": { "type": "string", "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$" },
+        "serviceMinutesPerStop": { "type": "number", "minimum": 0 },
+        "averageSpeedKmh": { "type": "number", "exclusiveMinimum": 0 },
+        "roadDistanceFactor": { "type": "number", "minimum": 1, "maximum": 3 }
+      }
     },
-    {
-      "id": "node_02",
-      "name": "Location Beta",
-      "latitude": 6.9315,
-      "longitude": 79.8550,
-      "demandOrLoad": 25,
-      "attributes": ["restricted_access"]
+    "depot": { "$ref": "#/$defs/coordinate" },
+    "vehicles": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/vehicle" }
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 20,
+      "items": { "$ref": "#/$defs/location" }
     }
-  ]
+  },
+  "$defs": {
+    "coordinate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["latitude", "longitude"],
+      "properties": {
+        "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+        "longitude": { "type": "number", "minimum": -180, "maximum": 180 }
+      }
+    },
+    "vehicle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "type", "capacityKg", "available"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "minLength": 1 },
+        "capacityKg": { "type": "number", "exclusiveMinimum": 0 },
+        "available": { "type": "boolean" },
+        "averageSpeedKmh": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "latitude", "longitude", "wasteKg", "priority", "attributes", "available", "disrupted"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+        "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+        "wasteKg": { "type": "number", "minimum": 0 },
+        "priority": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "attributes": {
+          "type": "array",
+          "items": { "enum": ["overflowing", "high_priority"] }
+        },
+        "available": { "type": "boolean" },
+        "disrupted": { "type": "boolean" }
+      }
+    }
+  }
 }

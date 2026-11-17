@@ -1,7 +1,25 @@
-import outputData from "../../output-contract.json";
+import type { OptimizationOutput } from "../services/api";
 
-export default function MetricsCharts() {
-  const { baselineValue, optimizedValue, improvementPercent } = outputData.baselineComparison;
+type MetricsChartsProps = {
+  comparison: OptimizationOutput["baselineComparison"] | null;
+  scenarioId: string | null;
+};
+
+export default function MetricsCharts({
+  comparison,
+  scenarioId,
+}: MetricsChartsProps) {
+  if (!comparison) {
+    return (
+      <section className="rounded-2xl border border-slate-800 bg-slate-950 p-5 text-slate-100 shadow-xl shadow-black/20">
+        <p className="text-sm text-slate-400">
+          Run the planner to compare optimized stop order against the same stops in input order.
+        </p>
+      </section>
+    );
+  }
+
+  const { baselineValue, optimizedValue, improvementPercent } = comparison;
   const maxValue = Math.max(baselineValue, optimizedValue, 0);
   const calculatedImprovement =
     baselineValue > 0 ? ((baselineValue - optimizedValue) / baselineValue) * 100 : 0;
@@ -16,7 +34,7 @@ export default function MetricsCharts() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-400">Algorithm efficiency</p>
           <h2 className="mt-1 text-lg font-semibold text-white">Baseline comparison</h2>
-          <p className="mt-1 text-sm text-slate-400">Total distance or cost · lower is better</p>
+          <p className="mt-1 text-sm text-slate-400">Same truck assignments and stops · estimated depot-to-depot distance</p>
         </div>
         <div
           className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${
@@ -38,7 +56,7 @@ export default function MetricsCharts() {
           <div key={item.label}>
             <div className="mb-2 flex items-center justify-between gap-4 text-sm">
               <span className="text-slate-300">{item.label}</span>
-              <span className="font-semibold tabular-nums text-white">{item.value.toFixed(2)}</span>
+              <span className="font-semibold tabular-nums text-white">{item.value.toFixed(2)} km</span>
             </div>
             <div className="h-3 overflow-hidden rounded-full bg-slate-800">
               <div
@@ -52,16 +70,22 @@ export default function MetricsCharts() {
 
       <div className="mt-6 grid grid-cols-2 gap-3 border-t border-slate-800 pt-4">
         <div>
-          <p className="text-xs text-slate-500">Cost saved</p>
-          <p className="mt-1 text-base font-semibold tabular-nums text-emerald-300">
-            {Math.max(0, baselineValue - optimizedValue).toFixed(2)}
+          <p className="text-xs text-slate-500">
+            {isImproved ? "Distance saved" : "Extra distance"}
+          </p>
+          <p className={`mt-1 text-base font-semibold tabular-nums ${isImproved ? "text-emerald-300" : "text-amber-300"}`}>
+            {Math.abs(baselineValue - optimizedValue).toFixed(2)} km
           </p>
         </div>
         <div className="text-right">
-          <p className="text-xs text-slate-500">Scenario</p>
-          <p className="mt-1 truncate text-sm font-medium text-slate-300">{outputData.scenarioId}</p>
+          <p className="text-xs text-slate-500">Unserviceable</p>
+          <p className="mt-1 truncate text-sm font-medium text-slate-300">
+            Baseline {comparison.baselineUnassignedCount} · Optimized{" "}
+            {comparison.optimizedUnassignedCount}
+          </p>
         </div>
       </div>
+      <p className="mt-3 truncate text-xs text-slate-500">Scenario: {scenarioId}</p>
     </section>
   );
 }

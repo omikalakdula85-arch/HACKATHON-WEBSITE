@@ -1,62 +1,92 @@
-# BuildX Resource Allocation Dashboard
+# Loopline · BuildX Challenge 05
 
-## 1. Project Name
+Loopline is a runnable Smart Waste & Fleet Management demo for Colombo. It gives citizens a collection-report workflow, drivers an ordered route manifest with a live route simulator, and city administrators a fleet command centre.
 
-**Sri Lankan Resource Allocation Optimizer** (working title; confirm the official project name with the team before submission).
+All seeded collection data and map points are simulated. The application is not connected to a municipal system, emergency service, live traffic feed, or road directions provider.
 
-## 2. Team ID
+## What is included
 
-The Team ID was not included in the repository materials. Add the registered BuildX Team ID here before submission.
+- **Citizen workspace:** submit a waste report with map pin, optional address and photo; preview report triage; follow `Pending → Assigned → En Route → Collected` status and route ETA.
+- **Driver workspace:** see assigned stops in visit order, start/pause/resume the route, choose 1x/2x/5x simulation speed, and update stop status as the truck reaches each point.
+- **Admin workspace:** review reports, locations, predicted fill, vehicle availability and utilization; optimize and dispatch the fleet; inspect unserviceable stops and distance comparison; request an operations briefing.
+- **Routing engine:** capacity-constrained vehicle routing with Clarke–Wright savings and 2-opt sequencing, schedule estimates, and a like-for-like input-order baseline.
+- **Traditional ML:** a seeded synthetic-data `RandomForestRegressor` predicts waste-bin fill and estimated kilograms.
+- **LLM integration:** optional Groq/OpenAI-compatible chat-completions API for report triage and operational notes. Without a key, explicitly labelled local rules generate triage and briefing text.
+- **Persistence:** SQLite stores demo users/sessions, collection locations, vehicles, reports, routes, ordered stops, collection history and simulation events. SQLAlchemy creates the schema automatically.
 
-## 3. Problem
+## Run locally
 
-Resource allocation and route planning must balance competing priorities such as travel distance or cost, resource capacity, and service demand. The current project contract models this as allocating locations to available resources while respecting capacity constraints.
+Requirements: Python 3.10+ and Node.js 20.9+.
 
-## 4. Solution
+1. Copy `.env.example` to `.env`. The default SQLite database and browser API URL work locally. For cloud triage, set `LLM_API_KEY` in `.env`; keep the key server-side.
+2. Install backend dependencies and start FastAPI from the repository root:
 
-The prototype is designed to let a user configure a scenario and review an optimized allocation on a dashboard. The output contract identifies a **Weighted Multi-Criteria Optimization** algorithm and includes resource assignments, summary metrics, a baseline comparison, and human-readable decision rationale. The frontend presents the controls, map, charts, and explainability together so a judge can inspect both the result and why it was chosen.
+   ```sh
+   python3 -m venv BACKEND/venv
+   BACKEND/venv/bin/python -m pip install -r BACKEND/requirements.txt
+   BACKEND/venv/bin/python -m uvicorn BACKEND.main:app --reload --host 127.0.0.1 --port 8001
+   ```
 
-The algorithm and live API are not present in the current repository snapshot; the contract describes the intended input and output rather than proving a live run.
+   The API startup creates the database, seeds demo accounts, 20 Colombo collection locations (including 10 key named sites and 10 additional neighbourhood points), 3 trucks with different capacities, 900 synthetic collection-history records, and the model weights. To seed manually:
 
-## 5. Tech Stack
+   ```sh
+   BACKEND/venv/bin/python -m BACKEND.seed
+   ```
 
-- **Frontend (planned):** Next.js, React, and Tailwind CSS.
-- **Backend (planned):** Python with FastAPI.
-- **Data (planned):** Reproducible JSON fixtures and/or SQLite.
-- **Optimization:** Weighted multi-criteria resource allocation, as identified by the output contract.
+3. In a second terminal:
 
-The repository does not yet include dependency manifests or application source for these layers.
+   ```sh
+   cd FRONTEND
+   npm install
+   npm run dev
+   ```
 
-## 6. Architecture
+4. Open [http://localhost:5173](http://localhost:5173). FastAPI docs are at [http://localhost:8001/docs](http://localhost:8001/docs).
 
-The intended flow is:
+Use `VITE_API_BASE_URL` in the root `.env` if the API runs at a different address. `FRONTEND_ORIGINS` controls allowed browser origins.
 
-1. A user configures scenario parameters in the frontend.
-2. The backend validates the input contract and runs the allocation algorithm.
-3. The backend returns results following `output-contract.json`.
-4. The dashboard renders the map and performance metrics alongside the explanation entries and summary metrics.
+## Demo accounts
 
-The repository currently contains the input/output contracts and scaffold context. The dashboard expects teammate components named `ControlPanel`, `MapVisualizer`, and `MetricsCharts`; these components and the backend integration are not included in this checkout yet.
+Choose a role on the login screen:
 
-## 7. Installation
+| Role | Demo account |
+| --- | --- |
+| Administrator | `admin@demo.local` |
+| Driver | `driver1@demo.local` |
+| Citizen | `citizen@demo.local` |
 
-There is no verified installation command yet: this repository snapshot has no frontend `package.json`, backend dependency file, or application entry point. Install steps should be added once those project files are checked in, rather than relying on unverified commands.
+Two more driver accounts are seeded (`driver2@demo.local`, `driver3@demo.local`). Their vehicles have different 120 kg, 180 kg, and 240 kg capacities. The role quick-switch issues random, expiring bearer tokens stored as digests in SQLite. This is **demo-only authentication**, not production password, identity-provider, or RBAC hardening.
 
-## 8. Execution
+## API overview
 
-The application cannot currently be launched from this snapshot because its frontend and backend implementations and run scripts are not present. Once those are added, document the exact frontend and backend commands here and verify them from a clean checkout.
+All application endpoints use `/api/v1`; the role matrix and primary request/response shapes are in [api-contract.json](./api-contract.json).
 
-## 9. Dataset / API Information
+- `POST /api/v1/auth/demo-login`, `GET /api/v1/auth/me`, `POST /api/v1/auth/logout`
+- `GET /api/v1/locations`, `GET /api/v1/vehicles`
+- `POST /api/v1/citizen/reports`, `GET /api/v1/citizen/reports`
+- `GET /api/v1/admin/overview`, `GET /api/v1/admin/reports`, `POST /api/v1/admin/reports/{report_id}/assign`, `POST /api/v1/admin/dispatch`
+- `GET /api/v1/ml/status`, `GET /api/v1/llm/status`, `POST /api/v1/llm/triage`, `GET /api/v1/llm/briefing`
+- `GET /api/v1/driver/route`, `POST /api/v1/driver/route/start`, `/pause`, `/speed`, `/location`, and `/stops/{stop_id}/complete`
 
-- The demo is labeled **Simulated Sri Lankan Dataset**.
-- `input-contract.json` describes two simulated locations with Colombo-area coordinates, demand/load values, attributes, and scenario parameters.
-- `output-contract.json` describes a sample resource assignment, score, distance-or-cost metric, unassigned count, execution time, baseline comparison, and explanation text.
-- No live external API or real-world dataset is configured. The sample values are contract fixtures and must not be presented as measured field results.
+The original Challenge 05 scenario endpoints remain available at `GET /api/v1/scenarios` and `POST /api/v1/process`; their request and response schemas are [input-contract.json](./input-contract.json) and [output-contract.json](./output-contract.json).
 
-## 10. Known Limitations
+Administrators can assign each pending citizen report to an available, driver-equipped truck from the command-centre inbox. Assignment checks remaining vehicle capacity, adds the report as a stop to the driver's planned route (or creates a route), and refreshes the ordered stops and estimated schedule. The driver sees the new stop in their manifest; the citizen sees the report status and ETA.
 
-- The official project name and Team ID still need confirmation.
-- The teammate control, map, and chart widgets, backend implementation, API integration, dependency manifests, and run scripts are absent from this repository snapshot.
-- The available contract example contains only two simulated locations and one resource assignment; it is not evidence of performance on a real or representative Sri Lankan dataset.
-- The output contract's runtime and improvement values are sample values, not independently benchmarked measurements.
-- The dashboard currently assumes the teammate components export default React components from `frontend/components`.
+## Run checks
+
+```sh
+BACKEND/venv/bin/python BACKEND/test_engine.py
+BACKEND/venv/bin/python BACKEND/test_services.py
+BACKEND/venv/bin/python BACKEND/test_assignment.py
+cd FRONTEND && npm run build
+```
+
+The routing script covers normal and disrupted cases; the service tests cover explicit offline triage and schema-invalid LLM fallback; assignment tests cover route creation, route insertion, ETA updates, and capacity rejection. The frontend build runs TypeScript checks before producing the Vite bundle.
+
+## Limitations
+
+- Demo role switching does not verify a password and is unsuitable for production.
+- The database and generated model file are local and ignored by Git. Back up or replace them for deployment.
+- The ML model is trained on generated historical patterns, not verified municipal measurements. LLM output is untrusted text and should be reviewed before operational use.
+- Route distances use great-circle coordinates with a detour factor. They are estimates, not road-network navigation, traffic-aware ETAs, or dispatch guarantees.
+- Photos are limited to 5 MB and common raster image formats. Keep citizen details and API keys out of screenshots and public deployments.

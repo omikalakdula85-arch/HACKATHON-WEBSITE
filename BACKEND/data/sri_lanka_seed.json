@@ -1,128 +1,303 @@
 {
-  "datasetId": "sri_lanka_dispatch_simulation_v1",
+  "datasetId": "colombo_waste_collection_simulation_v1",
   "dataStatus": "simulated",
-  "disclaimer": "All demand, resource, access, and disruption values below are fabricated for demonstration. Place names and coordinates refer to real Sri Lankan locations; this dataset is not live operational data.",
+  "disclaimer": "All waste quantities, truck capacities, availability, and schedules are simulated for the BuildX Challenge 05 demonstration. The 20 Colombo-area points are representative map locations, not live municipal data. Route distances use great-circle distance with a road-detour factor; they are estimates, not live road-network directions.",
+  "depot": {
+    "latitude": 6.9271,
+    "longitude": 79.8612
+  },
+  "vehicles": [
+    {
+      "id": "truck_compact",
+      "name": "Compact Truck",
+      "type": "Compactor",
+      "capacityKg": 90,
+      "available": true
+    },
+    {
+      "id": "truck_medium",
+      "name": "Medium Truck",
+      "type": "Compactor",
+      "capacityKg": 140,
+      "available": true
+    },
+    {
+      "id": "truck_heavy",
+      "name": "Heavy Truck",
+      "type": "Heavy compactor",
+      "capacityKg": 200,
+      "available": true
+    }
+  ],
+  "locations": [
+    {
+      "id": "C01",
+      "name": "Colombo Fort",
+      "latitude": 6.9344,
+      "longitude": 79.8428,
+      "normalWasteKg": 12,
+      "disruptedWasteKg": 26,
+      "priority": 4,
+      "attributes": ["high_priority"],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C02",
+      "name": "Wellawatte",
+      "latitude": 6.8747,
+      "longitude": 79.8612,
+      "normalWasteKg": 15,
+      "disruptedWasteKg": 32,
+      "priority": 3,
+      "attributes": [],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C03",
+      "name": "Rajagiriya",
+      "latitude": 6.9093,
+      "longitude": 79.895,
+      "normalWasteKg": 14,
+      "disruptedWasteKg": 31,
+      "priority": 3,
+      "attributes": [],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C04",
+      "name": "Pettah",
+      "latitude": 6.9388,
+      "longitude": 79.85,
+      "normalWasteKg": 18,
+      "disruptedWasteKg": 36,
+      "priority": 5,
+      "attributes": ["high_priority"],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C05",
+      "name": "Dehiwala",
+      "latitude": 6.856,
+      "longitude": 79.865,
+      "normalWasteKg": 13,
+      "disruptedWasteKg": 29,
+      "priority": 3,
+      "attributes": [],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C06",
+      "name": "Nugegoda",
+      "latitude": 6.8708,
+      "longitude": 79.8896,
+      "normalWasteKg": 16,
+      "disruptedWasteKg": 34,
+      "priority": 4,
+      "attributes": ["high_priority"],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C07",
+      "name": "Kollupitiya",
+      "latitude": 6.9147,
+      "longitude": 79.8488,
+      "normalWasteKg": 12,
+      "disruptedWasteKg": 27,
+      "priority": 3,
+      "attributes": [],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C08",
+      "name": "Battaramulla",
+      "latitude": 6.9025,
+      "longitude": 79.922,
+      "normalWasteKg": 17,
+      "disruptedWasteKg": 37,
+      "priority": 4,
+      "attributes": [],
+      "available": true,
+      "disrupted": true
+    },
+    {
+      "id": "C09",
+      "name": "Bambalapitiya",
+      "latitude": 6.8883,
+      "longitude": 79.856,
+      "normalWasteKg": 14,
+      "disruptedWasteKg": 30,
+      "priority": 3,
+      "attributes": [],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C10",
+      "name": "Kotte",
+      "latitude": 6.89,
+      "longitude": 79.9065,
+      "normalWasteKg": 15,
+      "disruptedWasteKg": 33,
+      "priority": 4,
+      "attributes": ["high_priority"],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C11",
+      "name": "Mount Lavinia",
+      "latitude": 6.8386,
+      "longitude": 79.8653,
+      "normalWasteKg": 18,
+      "disruptedWasteKg": 39,
+      "priority": 4,
+      "attributes": [],
+      "available": true,
+      "disrupted": true
+    },
+    {
+      "id": "C12",
+      "name": "Borella",
+      "latitude": 6.914,
+      "longitude": 79.877,
+      "normalWasteKg": 13,
+      "disruptedWasteKg": 28,
+      "priority": 3,
+      "attributes": [],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C13",
+      "name": "Maradana",
+      "latitude": 6.927,
+      "longitude": 79.8645,
+      "normalWasteKg": 16,
+      "disruptedWasteKg": 35,
+      "priority": 4,
+      "attributes": ["high_priority"],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C14",
+      "name": "Dematagoda",
+      "latitude": 6.9282,
+      "longitude": 79.877,
+      "normalWasteKg": 14,
+      "disruptedWasteKg": 31,
+      "priority": 3,
+      "attributes": [],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C15",
+      "name": "Kirulapone",
+      "latitude": 6.879,
+      "longitude": 79.867,
+      "normalWasteKg": 17,
+      "disruptedWasteKg": 37,
+      "priority": 4,
+      "attributes": ["high_priority"],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C16",
+      "name": "Narahenpita",
+      "latitude": 6.891,
+      "longitude": 79.879,
+      "normalWasteKg": 13,
+      "disruptedWasteKg": 29,
+      "priority": 3,
+      "attributes": [],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C17",
+      "name": "Thimbirigasyaya",
+      "latitude": 6.8977,
+      "longitude": 79.873,
+      "normalWasteKg": 16,
+      "disruptedWasteKg": 35,
+      "priority": 4,
+      "attributes": ["high_priority"],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C18",
+      "name": "Havelock Town",
+      "latitude": 6.889,
+      "longitude": 79.867,
+      "normalWasteKg": 15,
+      "disruptedWasteKg": 33,
+      "priority": 3,
+      "attributes": [],
+      "available": true,
+      "disrupted": false
+    },
+    {
+      "id": "C19",
+      "name": "Maharagama",
+      "latitude": 6.8489,
+      "longitude": 79.9265,
+      "normalWasteKg": 14,
+      "disruptedWasteKg": 31,
+      "priority": 4,
+      "attributes": [],
+      "available": true,
+      "disrupted": true
+    },
+    {
+      "id": "C20",
+      "name": "Kaduwela",
+      "latitude": 6.934,
+      "longitude": 79.984,
+      "normalWasteKg": 18,
+      "disruptedWasteKg": 220,
+      "priority": 5,
+      "attributes": ["high_priority"],
+      "available": true,
+      "disrupted": true
+    }
+  ],
   "scenarios": [
     {
       "scenarioId": "scenario_01_normal",
-      "name": "Normal Conditions",
-      "description": "Routine multi-city supply allocation with standard road access and moderate simulated demand.",
-      "isSimulated": true,
-      "input": {
-        "scenarioId": "scenario_01_normal",
-        "userPriority": "cost_efficient",
-        "parameters": {
-          "maxResources": 3,
-          "capacityLimit": 50,
-          "allowDisruptions": false
-        },
-        "nodes": [
-          {
-            "id": "colombo_fort",
-            "name": "Colombo Fort",
-            "latitude": 6.9344,
-            "longitude": 79.8428,
-            "demandOrLoad": 18,
-            "attributes": ["urban_hub", "high_priority", "accessible"]
-          },
-          {
-            "id": "malabe_town",
-            "name": "Malabe",
-            "latitude": 6.9061,
-            "longitude": 79.9696,
-            "demandOrLoad": 14,
-            "attributes": ["urban", "accessible"]
-          },
-          {
-            "id": "kandy_centre",
-            "name": "Kandy City Centre",
-            "latitude": 7.2906,
-            "longitude": 80.6337,
-            "demandOrLoad": 22,
-            "attributes": ["regional_hub", "high_priority"]
-          },
-          {
-            "id": "galle_fort",
-            "name": "Galle Fort",
-            "latitude": 6.0535,
-            "longitude": 80.221,
-            "demandOrLoad": 16,
-            "attributes": ["regional", "restricted_access"]
-          },
-          {
-            "id": "kurunegala_town",
-            "name": "Kurunegala",
-            "latitude": 7.4863,
-            "longitude": 80.3623,
-            "demandOrLoad": 12,
-            "attributes": ["regional", "accessible"]
-          }
-        ]
+      "name": "Normal Collection Day",
+      "description": "Routine collection across 20 simulated Colombo-area locations with standard waste levels.",
+      "userPriority": "cost_efficient",
+      "demandField": "normalWasteKg",
+      "parameters": {
+        "allowDisruptions": false,
+        "shiftStart": "07:00",
+        "serviceMinutesPerStop": 8,
+        "averageSpeedKmh": 25,
+        "roadDistanceFactor": 1.25
       }
     },
     {
       "scenarioId": "scenario_02_disrupted_high_load",
-      "name": "High-Load / Disrupted Conditions",
-      "description": "Elevated simulated demand with two constrained corridors and priority service locations.",
-      "isSimulated": true,
-      "input": {
-        "scenarioId": "scenario_02_disrupted_high_load",
-        "userPriority": "balanced",
-        "parameters": {
-          "maxResources": 4,
-          "capacityLimit": 55,
-          "allowDisruptions": true
-        },
-        "nodes": [
-          {
-            "id": "colombo_fort",
-            "name": "Colombo Fort",
-            "latitude": 6.9344,
-            "longitude": 79.8428,
-            "demandOrLoad": 32,
-            "attributes": ["urban_hub", "high_priority", "simulated_congestion"]
-          },
-          {
-            "id": "malabe_town",
-            "name": "Malabe",
-            "latitude": 6.9061,
-            "longitude": 79.9696,
-            "demandOrLoad": 27,
-            "attributes": ["urban", "simulated_roadworks"]
-          },
-          {
-            "id": "kandy_centre",
-            "name": "Kandy City Centre",
-            "latitude": 7.2906,
-            "longitude": 80.6337,
-            "demandOrLoad": 38,
-            "attributes": ["regional_hub", "high_priority"]
-          },
-          {
-            "id": "galle_fort",
-            "name": "Galle Fort",
-            "latitude": 6.0535,
-            "longitude": 80.221,
-            "demandOrLoad": 29,
-            "attributes": ["regional", "restricted_access", "simulated_delay"]
-          },
-          {
-            "id": "kurunegala_town",
-            "name": "Kurunegala",
-            "latitude": 7.4863,
-            "longitude": 80.3623,
-            "demandOrLoad": 24,
-            "attributes": ["regional", "accessible"]
-          },
-          {
-            "id": "jaffna_centre",
-            "name": "Jaffna Town",
-            "latitude": 9.6615,
-            "longitude": 80.0255,
-            "demandOrLoad": 31,
-            "attributes": ["regional_hub", "high_priority", "long_distance"]
-          }
-        ]
+      "name": "Overflow and Disrupted Day",
+      "description": "Elevated waste and overflowing collection points exceed available fleet capacity; one point exceeds the largest truck.",
+      "userPriority": "urgent",
+      "demandField": "disruptedWasteKg",
+      "parameters": {
+        "allowDisruptions": true,
+        "shiftStart": "07:00",
+        "serviceMinutesPerStop": 8,
+        "averageSpeedKmh": 25,
+        "roadDistanceFactor": 1.25
       }
     }
   ]

@@ -1,36 +1,104 @@
 {
-  "status": "success",
-  "scenarioId": "scenario_01_normal",
-  "algorithmUsed": "Weighted Multi-Criteria Optimization",
-  "summaryMetrics": {
-    "primaryScore": 94.2,
-    "totalDistanceOrCost": 14.5,
-    "unassignedCount": 0,
-    "executionTimeMs": 12
-  },
-  "results": [
-    {
-      "groupId": "Resource_A",
-      "sequence": ["node_01", "node_02"],
-      "loadUsed": 40,
-      "loadCapacity": 50,
-      "metricValue": 7.2
-    }
-  ],
-  "baselineComparison": {
-    "baselineValue": 21.0,
-    "optimizedValue": 14.5,
-    "improvementPercent": 30.95
-  },
-  "explainability": [
-    {
-      "targetId": "node_02",
-      "reason": "Assigned to Resource_A because capacity limit (50) accommodates combined demand (40) with minimal detour."
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BuildX Challenge 05 waste collection output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "scenarioId", "algorithmUsed", "summaryMetrics", "results", "baselineComparison", "unassignedLocations", "explainability", "error"],
+  "properties": {
+    "status": { "enum": ["success", "error"] },
+    "scenarioId": { "type": ["string", "null"] },
+    "algorithmUsed": { "type": "string" },
+    "summaryMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primaryScore", "totalDistanceOrCost", "unassignedCount", "assignedCount", "totalWasteKg", "collectedWasteKg", "averageVehicleUtilizationPercent", "executionTimeMs"],
+      "properties": {
+        "primaryScore": { "type": "number" },
+        "totalDistanceOrCost": { "type": "number" },
+        "unassignedCount": { "type": "integer" },
+        "assignedCount": { "type": "integer" },
+        "totalWasteKg": { "type": "number" },
+        "collectedWasteKg": { "type": "number" },
+        "averageVehicleUtilizationPercent": { "type": "number" },
+        "executionTimeMs": { "type": "number" }
+      }
     },
-    {
-      "targetId": "general",
-      "reason": "Achieved a 30.95% improvement over greedy baseline allocation."
+    "results": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/vehicleRoute" }
+    },
+    "baselineComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baselineValue", "optimizedValue", "improvementPercent", "baselineUnassignedCount", "optimizedUnassignedCount"],
+      "properties": {
+        "baselineValue": { "type": "number" },
+        "optimizedValue": { "type": "number" },
+        "improvementPercent": { "type": "number" },
+        "baselineUnassignedCount": { "type": "integer" },
+        "optimizedUnassignedCount": { "type": "integer" }
+      }
+    },
+    "unassignedLocations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["nodeId", "name", "wasteKg", "reason"],
+        "properties": {
+          "nodeId": { "type": "string" },
+          "name": { "type": "string" },
+          "wasteKg": { "type": "number" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "explainability": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["targetId", "reason"],
+        "properties": {
+          "targetId": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "error": { "type": ["string", "null"] }
+  },
+  "$defs": {
+    "vehicleRoute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["groupId", "vehicleName", "vehicleType", "available", "sequence", "loadUsedKg", "loadCapacityKg", "utilizationPercent", "metricValue", "routeDistanceKm", "routeDurationMinutes", "schedule"],
+      "properties": {
+        "groupId": { "type": "string" },
+        "vehicleName": { "type": "string" },
+        "vehicleType": { "type": "string" },
+        "available": { "type": "boolean" },
+        "sequence": { "type": "array", "items": { "type": "string" } },
+        "loadUsedKg": { "type": "number" },
+        "loadCapacityKg": { "type": "number" },
+        "utilizationPercent": { "type": "number" },
+        "metricValue": { "type": "number" },
+        "routeDistanceKm": { "type": "number" },
+        "routeDurationMinutes": { "type": "number" },
+        "schedule": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["nodeId", "name", "arrivalTime", "wasteKg"],
+            "properties": {
+              "nodeId": { "type": "string" },
+              "name": { "type": "string" },
+              "arrivalTime": { "type": "string" },
+              "wasteKg": { "type": "number" }
+            }
+          }
+        }
+      }
     }
-  ],
-  "error": null
+  }
 }
