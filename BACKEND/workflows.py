@@ -11,7 +11,7 @@ from typing import Any
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from starlette.concurrency import run_in_threadpool
 
@@ -40,7 +40,8 @@ try:
         TriageRequest,
         VehiclePatch,
     )
-    from .settings import DEPOT, DISPOSAL_SITE, UPLOAD_DIR
+    from .settings import DEPOT, DISPOSAL_SITE
+    from .storage import StorageError, read_report_photo, store_report_photo
 except ImportError:
     import llm_service
     import ml_model
@@ -50,7 +51,8 @@ except ImportError:
     from engine import haversine_km
     from models import CollectionRecord, DemoSession, Location, Report, Route, RouteStop, SimulationEvent, User, Vehicle
     from schemas import DemoLoginRequest, DriverPosition, ReportAssignment, SimulationSpeed, TriageRequest, VehiclePatch
-    from settings import DEPOT, DISPOSAL_SITE, UPLOAD_DIR
+    from settings import DEPOT, DISPOSAL_SITE
+    from storage import StorageError, read_report_photo, store_report_photo
 
 
 LOGGER = logging.getLogger("buildx.workflows")
@@ -422,10 +424,10 @@ async def create_citizen_report(
         extension = mimetypes.guess_extension(content_type) or ".img"
         photo_path = f"{uuid4().hex}{extension}"
         try:
-            (UPLOAD_DIR / photo_path).write_bytes(contents)
-        except OSError as exc:
-            LOGGER.exception("Unable to store citizen report image.")
-            raise HTTPException(status_code=500, detail="Image upload could not be stored.") from exc
+            await run_in_threadpool(store_report_photo, photo_path, contents, content_type)
+        except StorageError as exc:
+            LOGGER.warning("Unable to store citizen report image: %s", exc)
+            raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
 
     triage = await run_in_threadpool(llm_service.triage_citizen_report, description, urgency)
     report = Report(
@@ -1008,7 +1010,7 @@ def get_report_photo(
     filename: str,
     user: User = Depends(authenticated),
     db: Session = Depends(get_db),
-) -> FileResponse:
+) -> Response:
     if Path(filename).name != filename:
         raise HTTPException(status_code=404, detail="Image not found.")
     report = db.query(Report).filter(Report.photo_path == filename).first()
@@ -1021,7 +1023,11 @@ def get_report_photo(
         Route.driver_id == user.id,
     ).first():
         raise HTTPException(status_code=403, detail="This image is not part of your assigned route.")
-    photo_file = UPLOAD_DIR / filename
-    if not photo_file.is_file():
-        raise HTTPException(status_code=404, detail="Image file is unavailable.")
-    return FileResponse(photo_file)
+    try:
+        contents, content_type = read_report_photo(filename)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="Image file is unavailable.") from exc
+    except StorageError as exc:
+        LOGGER.warning("Unable to read citizen report image: %s", exc)
+        raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
+    return Response(content=contents, media_type=content_type)

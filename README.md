@@ -45,6 +45,17 @@ Requirements: Python 3.10+ and Node.js 20.9+.
 
 Use `VITE_API_BASE_URL` in the root `.env` if the API runs at a different address. `FRONTEND_ORIGINS` controls allowed browser origins.
 
+## Deploy with persistent storage
+
+The suggested deployment uses Vercel for the Vite frontend, Render for FastAPI, and Supabase for PostgreSQL and private report-photo storage. The Render Blueprint is in [render.yaml](./render.yaml).
+
+1. Create a Supabase project. In Storage, create a **private** bucket named `report-photos`. Copy the project URL, service-role key, and PostgreSQL connection string (use the session pooler connection string if the Render host cannot reach the direct database address).
+2. Push this repository to GitHub and create a Render Blueprint from it. Set `DATABASE_URL`, `SUPABASE_URL`, and `SUPABASE_SERVICE_ROLE_KEY` in the Render service environment. Use the Supabase project URL and connection string; keep the service-role key secret. The API creates its tables and demo seed data at startup.
+3. Import the repository into Vercel with `FRONTEND` as the root directory, `npm run build` as the build command, and `dist` as the output directory. Set `VITE_API_BASE_URL` to the Render service URL (for example, `https://loopline-api.onrender.com`).
+4. Set Render's `FRONTEND_ORIGINS` to the deployed Vercel origin (for example, `https://your-project.vercel.app`) and redeploy the API.
+
+The Supabase service-role key belongs only in Render's backend environment, never in Vercel or frontend code. Hosted report records and photos persist in Supabase; free hosting tiers may sleep or impose usage limits. The LLM key is optional, and the app uses labeled local rules when cloud triage is unavailable.
+
 ## Demo accounts
 
 Choose a role on the login screen:
