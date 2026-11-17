@@ -1,0 +1,129 @@
+{
+  "datasetId": "sri_lanka_dispatch_simulation_v1",
+  "dataStatus": "simulated",
+  "disclaimer": "All demand, resource, access, and disruption values below are fabricated for demonstration. Place names and coordinates refer to real Sri Lankan locations; this dataset is not live operational data.",
+  "scenarios": [
+    {
+      "scenarioId": "scenario_01_normal",
+      "name": "Normal Conditions",
+      "description": "Routine multi-city supply allocation with standard road access and moderate simulated demand.",
+      "isSimulated": true,
+      "input": {
+        "scenarioId": "scenario_01_normal",
+        "userPriority": "cost_efficient",
+        "parameters": {
+          "maxResources": 3,
+          "capacityLimit": 50,
+          "allowDisruptions": false
+        },
+        "nodes": [
+          {
+            "id": "colombo_fort",
+            "name": "Colombo Fort",
+            "latitude": 6.9344,
+            "longitude": 79.8428,
+            "demandOrLoad": 18,
+            "attributes": ["urban_hub", "high_priority", "accessible"]
+          },
+          {
+            "id": "malabe_town",
+            "name": "Malabe",
+            "latitude": 6.9061,
+            "longitude": 79.9696,
+            "demandOrLoad": 14,
+            "attributes": ["urban", "accessible"]
+          },
+          {
+            "id": "kandy_centre",
+            "name": "Kandy City Centre",
+            "latitude": 7.2906,
+            "longitude": 80.6337,
+            "demandOrLoad": 22,
+            "attributes": ["regional_hub", "high_priority"]
+          },
+          {
+            "id": "galle_fort",
+            "name": "Galle Fort",
+            "latitude": 6.0535,
+            "longitude": 80.221,
+            "demandOrLoad": 16,
+            "attributes": ["regional", "restricted_access"]
+          },
+          {
+            "id": "kurunegala_town",
+            "name": "Kurunegala",
+            "latitude": 7.4863,
+            "longitude": 80.3623,
+            "demandOrLoad": 12,
+            "attributes": ["regional", "accessible"]
+          }
+        ]
+      }
+    },
+    {
+      "scenarioId": "scenario_02_disrupted_high_load",
+      "name": "High-Load / Disrupted Conditions",
+      "description": "Elevated simulated demand with two constrained corridors and priority service locations.",
+      "isSimulated": true,
+      "input": {
+        "scenarioId": "scenario_02_disrupted_high_load",
+        "userPriority": "balanced",
+        "parameters": {
+          "maxResources": 4,
+          "capacityLimit": 55,
+          "allowDisruptions": true
+        },
+        "nodes": [
+          {
+            "id": "colombo_fort",
+            "name": "Colombo Fort",
+            "latitude": 6.9344,
+            "longitude": 79.8428,
+            "demandOrLoad": 32,
+            "attributes": ["urban_hub", "high_priority", "simulated_congestion"]
+          },
+          {
+            "id": "malabe_town",
+            "name": "Malabe",
+            "latitude": 6.9061,
+            "longitude": 79.9696,
+            "demandOrLoad": 27,
+            "attributes": ["urban", "simulated_roadworks"]
+          },
+          {
+            "id": "kandy_centre",
+            "name": "Kandy City Centre",
+            "latitude": 7.2906,
+            "longitude": 80.6337,
+            "demandOrLoad": 38,
+            "attributes": ["regional_hub", "high_priority"]
+          },
+          {
+            "id": "galle_fort",
+            "name": "Galle Fort",
+            "latitude": 6.0535,
+            "longitude": 80.221,
+            "demandOrLoad": 29,
+            "attributes": ["regional", "restricted_access", "simulated_delay"]
+          },
+          {
+            "id": "kurunegala_town",
+            "name": "Kurunegala",
+            "latitude": 7.4863,
+            "longitude": 80.3623,
+            "demandOrLoad": 24,
+            "attributes": ["regional", "accessible"]
+          },
+          {
+            "id": "jaffna_centre",
+            "name": "Jaffna Town",
+            "latitude": 9.6615,
+            "longitude": 80.0255,
+            "demandOrLoad": 31,
+            "attributes": ["regional_hub", "high_priority", "long_distance"]
+          }
+        ]
+      }
+    }
+  ]
+}
