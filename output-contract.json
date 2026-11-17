@@ -1,0 +1,36 @@
+{
+  "status": "success",
+  "scenarioId": "scenario_01_normal",
+  "algorithmUsed": "Weighted Multi-Criteria Optimization",
+  "summaryMetrics": {
+    "primaryScore": 94.2,
+    "totalDistanceOrCost": 14.5,
+    "unassignedCount": 0,
+    "executionTimeMs": 12
+  },
+  "results": [
+    {
+      "groupId": "Resource_A",
+      "sequence": ["node_01", "node_02"],
+      "loadUsed": 40,
+      "loadCapacity": 50,
+      "metricValue": 7.2
+    }
+  ],
+  "baselineComparison": {
+    "baselineValue": 21.0,
+    "optimizedValue": 14.5,
+    "improvementPercent": 30.95
+  },
+  "explainability": [
+    {
+      "targetId": "node_02",
+      "reason": "Assigned to Resource_A because capacity limit (50) accommodates combined demand (40) with minimal detour."
+    },
+    {
+      "targetId": "general",
+      "reason": "Achieved a 30.95% improvement over greedy baseline allocation."
+    }
+  ],
+  "error": null
+}
