@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: loopline-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r BACKEND/requirements.txt
+    startCommand: uvicorn BACKEND.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_ORIGINS
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_STORAGE_BUCKET
+        value: report-photos

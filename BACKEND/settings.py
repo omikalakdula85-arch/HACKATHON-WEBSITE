@@ -12,6 +12,9 @@ DATABASE_URL = os.getenv(
     "DATABASE_URL",
     f"sqlite:///{(BACKEND_DIR / 'waste_management.db').as_posix()}",
 )
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+SUPABASE_STORAGE_BUCKET = os.getenv("SUPABASE_STORAGE_BUCKET", "report-photos").strip()
 UPLOAD_DIR = BACKEND_DIR / "uploads"
 MODEL_DIR = BACKEND_DIR / "models"
 MODEL_PATH = MODEL_DIR / "waste_fill_model.joblib"

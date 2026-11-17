@@ -249,8 +249,11 @@ def _frontend_origins() -> list[str]:
 async def lifespan(_: FastAPI):
     if __package__:
         from .seed import seed_database
+        from .storage import validate_storage_configuration
     else:
         from seed import seed_database
+        from storage import validate_storage_configuration
+    validate_storage_configuration()
     await run_in_threadpool(seed_database)
     yield
 
